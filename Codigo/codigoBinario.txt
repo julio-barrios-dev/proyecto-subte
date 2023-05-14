@@ -1,140 +1,157 @@
 /*
 -----------CONSIGNA PRIMER PARCIAL----------------------------------
-	Crear un algoritmo que represente un contador binario, 
-    el primer led(que se encuentra a la izq) es el mas significativo
-    los valores van de 0 a 15.
-    
+	Consigna SUBTE:
+La empresa  “UTN FRA Robotics” ganó la licitación de un proyecto, y 
+deberá Implementar un sistema que permita al usuario saber a qué estación 
+de subte está llegando, aparte  el sistema muestra las estaciones que 
+faltan hasta llegar a destino, para ello debemos utilizar 4 LEDs y el 
+display de 7 segmentos. Esta vez el buzzer deberá emitir un sonido 
+diferente cada vez que se llegue a una estación.
+El sistema deberá arrancar apagado, luego de accionar el interruptor 
+empezará y hará lo pedido.
+Deberá recorrer las estaciones comenzando por constitución y mostrará en el 
+display 7 segmentos cuantas estaciones faltan para llegar a moreno, cada 
+vez que llega a una estación realiza un sonido el buzzer.
 ---------------------------------------------------------------------
 */
 
-#define B3 12
-#define B2 11
-#define B1 10
-#define B0 9
+// C++ code
+//
 
-#define TIEMPO 1000
+# define LED1 13
+# define LED2 12
+# define LED3 11
+# define LED4 10
+# define A 8
+# define B 7
+# define F 6
+# define G 5
+# define C A1
+# define D A2
+# define E A3
+# define SWITCH 9
+# define PIEZO A0
 
-void PrenderLed(int encenderLed);
-void EncenderBinario(int estado3, int estado2,int estado1,int estado0);
 void setup()
 {
-  pinMode(B3, OUTPUT);
-  pinMode(B2, OUTPUT);
-  pinMode(B1, OUTPUT);
-  pinMode(B0, OUTPUT);
-  
+  pinMode(LED1, OUTPUT);
+  pinMode(LED2, OUTPUT);
+  pinMode(LED3, OUTPUT);
+  pinMode(LED4, OUTPUT);
+  pinMode(A,OUTPUT);  
+  pinMode(B,OUTPUT);
+  pinMode(C,OUTPUT);
+  pinMode(D,OUTPUT);
+  pinMode(E,OUTPUT);
+  pinMode(F,OUTPUT);
+  pinMode(G,OUTPUT);
+  pinMode(SWITCH, INPUT);
+  pinMode(PIEZO,OUTPUT);
   Serial.begin(9600);
-  
 }
 
-int  contador=0;
-
-
+bool test = false;
 void loop()
-{  
-   
-  contador++;
-  if(contador>15)
-  {
-    contador=0;
-  }
-  PrenderLed(contador);
-  delay(TIEMPO);
+{
+  int estado_switch = digitalRead(SWITCH);
+  estaciones(estado_switch, 1000, 700, 500);
 }
 
-//muestra el numero binario
-void PrenderLed(int encenderLed)
-{
-  Serial.println(encenderLed);
-  switch(encenderLed)
-  {
-    case 0: 
-    	EncenderBinario(LOW,LOW,LOW,LOW);
-  	  break;
-    
-    
-    //Dato 0001
-    case 1: 
-    	EncenderBinario(LOW,LOW,LOW,HIGH);
-  	  break;
- 
-    //Dato 0010
-    case 2: 
-    	EncenderBinario(LOW,LOW,HIGH,LOW);
- 	  break;
+void estaciones(int encender, int tiempo_estacion, int tono_frecuencia, int tono_duracion) {
+  	int contador = 0;
   
-    //Dato 0011
-    case 3:   
-    	EncenderBinario(LOW,LOW,HIGH,HIGH);
-      break;
-  
-    //Dato 0100
-    case 4:
-    	EncenderBinario(LOW,HIGH,LOW,LOW);
-     break;
-    
-    //Dato 0101
- 	 case 5:   
-        EncenderBinario(LOW,HIGH,LOW,HIGH);
-  	  break;
-    
-  //Dato 0110
-      case 6:  
-    	EncenderBinario(LOW,HIGH,HIGH,LOW);
-      break;
-    
-  //Dato 0111  
-      case 7:  
-    	EncenderBinario(LOW,HIGH,HIGH,HIGH);
-      break;
-    
-  //Dato 1000
-       case 8:
-    	EncenderBinario(HIGH,LOW,LOW,LOW);
-      break;   
-  
-  //Dato 1001
-      case 9:   
-    	EncenderBinario(HIGH,LOW,LOW,HIGH);
-      break;
-    
-  //Dato 1010
-  	  case 10:  
-    	EncenderBinario(HIGH,LOW,HIGH,LOW);
-      break;
-    
-  //Dato 1011
-      case 11:
-    	EncenderBinario(HIGH,LOW,HIGH,HIGH);
-      break;
-    
-  //Dato 1100
-      case 12:  
-    	EncenderBinario(HIGH,HIGH,LOW,LOW);   
-      break;
-  //Dato 1101
-      case 13:
-    	EncenderBinario(HIGH,HIGH,LOW,HIGH);
-      break;
-  //Dato 1110
-      case 14:
-    	EncenderBinario(HIGH,HIGH,HIGH,LOW);
-      break;
-    
-  //Dato 1111
-  	  case 15:
-    	EncenderBinario(HIGH,HIGH,HIGH,HIGH);
-      break;
-    
-  }
-  
+	if (encender == 0){
+    digitalWrite(LED1,LOW);
+    digitalWrite(LED2,LOW);
+    digitalWrite(LED3,LOW);
+    digitalWrite(LED4,LOW);
+    digitalWrite(A,LOW);
+    digitalWrite(B,LOW);
+    digitalWrite(C,LOW);
+    digitalWrite(D,LOW);
+    digitalWrite(E,LOW);
+    digitalWrite(F,LOW);
+    digitalWrite(G,LOW);
+
+    } else {
+      if (contador == 0){
+        digitalWrite(LED4,LOW);
+        digitalWrite(LED1,HIGH);
+        encenderNumero(contador);
+        contador++;
+        tone(PIEZO, tono_frecuencia, tono_duracion);
+        Serial.println("Estacion: Constitucion");
+        delay(tiempo_estacion);
+    }
+      if (contador == 1){
+        digitalWrite(LED2,HIGH);
+        digitalWrite(LED1,LOW);
+        encenderNumero(contador);
+        Serial.println("Estacion: San Juan");
+        contador++;
+        tone(PIEZO, tono_frecuencia, tono_duracion);
+        delay(tiempo_estacion);
+    }
+      if (contador == 2){
+        digitalWrite(LED3,HIGH);
+        digitalWrite(LED2,LOW);
+        encenderNumero(contador);
+        Serial.println("Estacion: Independencia");
+        contador++;
+        tone(PIEZO, tono_frecuencia, tono_duracion);
+        delay(tiempo_estacion);
+    }
+       if (contador == 3){
+         digitalWrite(LED4,HIGH);
+         digitalWrite(LED3,LOW);
+         encenderNumero(contador);
+         Serial.println("Estacion: Moreno");
+         contador = 0;
+         tone(PIEZO, tono_frecuencia, tono_duracion);
+         delay(tiempo_estacion);
+    }
+    }
 }
 
-//Enciende cada led dependiendo el estado que recibe
-void EncenderBinario(int estado3, int estado2,int estado1,int estado0)
+int encenderNumero(int valor)
 {
-  digitalWrite(B3,estado3);
-  digitalWrite(B2,estado2);
-  digitalWrite(B1,estado1);
-  digitalWrite(B0,estado0);
+	switch (valor)
+    {
+    case 0:  
+          digitalWrite(A,HIGH);
+          digitalWrite(B,HIGH);
+          digitalWrite(C,HIGH);
+          digitalWrite(D,HIGH);
+          digitalWrite(E,HIGH);
+          digitalWrite(F,HIGH);
+          digitalWrite(G,LOW);
+    break;  
+    case 1:  
+          digitalWrite(A,LOW);
+          digitalWrite(B,HIGH);
+          digitalWrite(C,HIGH);
+          digitalWrite(D,LOW);
+          digitalWrite(E,LOW);
+          digitalWrite(F,LOW);
+          digitalWrite(G,LOW);
+    break; 
+    case 2:  
+          digitalWrite(A,HIGH);
+          digitalWrite(B,HIGH);
+          digitalWrite(C,LOW);
+          digitalWrite(D,HIGH);
+          digitalWrite(E,HIGH);
+          digitalWrite(F,LOW);
+          digitalWrite(G,HIGH);
+    break;  
+    case 3:  
+          digitalWrite(A,HIGH);
+          digitalWrite(B,HIGH);
+          digitalWrite(C,HIGH);
+          digitalWrite(D,HIGH);
+          digitalWrite(E,LOW);
+          digitalWrite(F,LOW);
+          digitalWrite(G,HIGH);
+    break;
+    }
 }
